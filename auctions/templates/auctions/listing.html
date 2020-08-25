@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+
+<div style="text-align: center;">
+    <img src="{{auction.image}}" width ="50%" height="50%" >
+    
+</div>
+<h6 style="text-align: center;">{{auction.title}}</h6>
+<p style="text-align:center ;">{{auction.des}}
+    
+</p>
+<div style="font-weight: bold ; font-size: 1.5cm;">
+    ${{bids.bid}}.0
+created by : {{auction.created}}
+    
+</div>
+<form action="{% url 'listings' auction.id %}" method="POST">
+    {% csrf_token %}
+    <input type= "number" name = "biddings">
+    
+</form>
