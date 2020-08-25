@@ -1,0 +1,36 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Active Listings</h2>
+    
+
+    
+
+    
+    <div class="container">
+
+    
+        <div class="row" >
+    
+        {% for items in auction %}
+                       
+    
+            <div class="col">
+    
+    
+    
+        <img src="{{items.image}}" width ="350" height="300" alt = "tutti">
+       
+                
+          <h6 style="text-align: center;"><a href=""> {{items.title}} </a></h6>  <p style="text-align: center;">{{items.des}}  </p>
+          {%for money in bids%}
+          {{money.bid}}
+          {%endfor%}
+                {{user}}
+                </div>
+        {% endfor %}               
+        </div>
+        
+        </div>
+    
+    {% endblock %}
