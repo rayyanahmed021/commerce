@@ -9,16 +9,20 @@ from .models import User,listing,watchlist,bidding
 
 def watch(request,listing_id):
     c = listing.objects.get(pk = listing_id)
-    d = watchlist.objects.get(item=c.title)
+    d = c.items.all()
     list = []
-    for names in d.users:
+    for names in d:
         list.append(names)
-    return render(request,"auctions/listing.html",{
-        "list":list,
-        "auction":c,
-        "message":"c",
-        "user":User.username
-        })
+        if user.username in list:
+
+            return render(request,"auctions/listing.html",{
+                "list":list,
+                "auction":c,
+                "message":"c",
+                "user":User.username
+                })
+        else:
+            pass
         
 def index(request):
     return render(request, "auctions/index.html",{
@@ -27,11 +31,18 @@ def index(request):
     })
 def listings(request,listing_id):
     c = listing.objects.get(pk = listing_id)
-    d = watchlist.objects.get(item=c.title)
+    d = c.items.all()
     list = []
-    for names in d.users:
+    for names in d:
         list.append(names)
-    if request.method == "POST":
+    if request.method == "POST" :
+        if User.username in list:
+            return render(request,"auctions/listing.html",{
+                "list":list,
+                "auction":c,
+                "message":"c",
+                "user":User.username
+                })
         byde = bidding.objects.get(pk = listing_id)
         bids = request.POST["biddings"]
         c = listing.objects.get(pk = listing_id)
