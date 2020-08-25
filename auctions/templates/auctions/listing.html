@@ -19,4 +19,19 @@ created by : {{auction.created}}
     <input type= "number" name = "biddings">
     
 </form>
+
+{% if user in list %}
+<form action="{% url 'watchlists' auction.id %}" method="POST">
+    {% csrf_token %}
+    <input type= "submit" value="remove from watchlist">    
+</form>
+{%else%}
+<form action="{% url 'watchlists' auction.id %}" method="POST">
+    {% csrf_token %}
+    <input type= "submit" value="add to watchlist">    
+</form>
+{% endif %}
+{{list}}
+
+
 {%endblock%}

@@ -7,30 +7,56 @@ from django.db.models.functions import Replace
 
 from .models import User,listing,watchlist,bidding
 
-
+def watch(request,listing_id):
+    c = listing.objects.get(pk = listing_id)
+    d = watchlist.objects.get(item=c.title)
+    list = []
+    for names in d.users:
+        list.append(names)
+    return render(request,"auctions/listing.html",{
+        "list":list,
+        "auction":c,
+        "message":"c",
+        "user":User.username
+        })
+        
 def index(request):
     return render(request, "auctions/index.html",{
         "auction": listing.objects.all(),
         "bids":bidding.objects.all()
     })
 def listings(request,listing_id):
+    c = listing.objects.get(pk = listing_id)
+    d = watchlist.objects.get(item=c.title)
+    list = []
+    for names in d.users:
+        list.append(names)
     if request.method == "POST":
         byde = bidding.objects.get(pk = listing_id)
         bids = request.POST["biddings"]
+        c = listing.objects.get(pk = listing_id)
+        d = watchlist.objects.get(item=c.title)
+        
         if int(f"{bids}") > int(f"{byde}") :
             bidding.objects.update(bid=Replace("bid",int(f"{byde}"),int(f"{bids}")))
             return render(request, "auctions/listing.html",{
                 "auction":listing.objects.get(pk=listing_id),
-                "bids": bidding.objects.get(pk = listing_id)
+                "bids": bidding.objects.get(pk = listing_id),
+                "list":list,
+                "user":User.username
             })
         else:
             return render(request,"auctions/listing.html",{
                 "auction": listing.objects.get(pk=listing_id),
-                "bids":bidding.objects.get(pk = listing_id)
+                "bids":bidding.objects.get(pk = listing_id),
+                "list":list,
+                "user":User.username
                 })
     return render(request, "auctions/listing.html",{
     "auction":listing.objects.get(pk=listing_id),
-    "bids": bidding.objects.get(pk =listing_id)
+    "bids": bidding.objects.get(pk =listing_id),
+    "list":list,
+    "user":User.username
     }) 
 def login_view(request):
     if request.method == "POST":
