@@ -22,7 +22,7 @@
         <img src="{{items.image}}" width ="350" height="300" alt = "tutti">
        
                 
-          <h6 style="text-align: center;"><a href=""> {{items.title}} </a></h6>  <p style="text-align: center;">{{items.des}}  </p>
+          <h6 style="text-align: center;"><a href="{% url 'listings' items.id %}"> {{items.title}} </a></h6>  <p style="text-align: center;">{{items.des}}  </p>
           {%for money in bids%}
           {{money.bid}}
           {%endfor%}

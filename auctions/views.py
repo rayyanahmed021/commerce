@@ -3,6 +3,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.db.models.functions import Replace
 
 from .models import User,listing,watchlist,bidding
 
@@ -12,8 +13,25 @@ def index(request):
         "auction": listing.objects.all(),
         "bids":bidding.objects.all()
     })
-
-
+def listings(request,listing_id):
+    if request.method == "POST":
+        byde = bidding.objects.get(pk = listing_id)
+        bids = request.POST["biddings"]
+        if int(f"{bids}") > int(f"{byde}") :
+            bidding.objects.update(bid=Replace("bid",int(f"{byde}"),int(f"{bids}")))
+            return render(request, "auctions/listing.html",{
+                "auction":listing.objects.get(pk=listing_id),
+                "bids": bidding.objects.get(pk = listing_id)
+            })
+        else:
+            return render(request,"auctions/listing.html",{
+                "auction": listing.objects.get(pk=listing_id),
+                "bids":bidding.objects.get(pk = listing_id)
+                })
+    return render(request, "auctions/listing.html",{
+    "auction":listing.objects.get(pk=listing_id),
+    "bids": bidding.objects.get(pk =listing_id)
+    }) 
 def login_view(request):
     if request.method == "POST":
 
