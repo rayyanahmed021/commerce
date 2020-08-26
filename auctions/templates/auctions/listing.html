@@ -20,21 +20,24 @@ created by : {{auction.created}}
     
 </form>
 
-{% if message %}
-<form action="{% url 'watchlists' auction.id %}" method="POST">
+
+
+<form action="{% url 'listings' auction.id %}" >
+   
     {% csrf_token %}
-    <input type= "submit" value="remove from watchlist">    
+    {% if user.username in list %}
+    
+    <input type= "button" value="remove from watchlist">    
+    {% else %}
+    <input type= "button" value="add to watchlist">    
+
+    {% endif %}
 </form>
-{%else%}
-<form action="{% url 'watchlists' auction.id %}" method="POST">
-    {% csrf_token %}
-    <input type= "submit" value="add to watchlist">    
-</form>
-
-{% endif %}
 
 
 
 
 
+
+{{list}}
 {%endblock%}
