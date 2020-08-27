@@ -41,8 +41,7 @@ def watch(request,listing_id,username):
 
 def index(request):
     return render(request, "auctions/index.html",{
-        "auction": listing.objects.all(),
-        "bids":bidding.objects.all()
+        "auction": listing.objects.all()
     })
 def listings(request,listing_id):
     c = listing.objects.get(pk = listing_id)
@@ -57,18 +56,17 @@ def listings(request,listing_id):
         if int(f"{bids}") > int(f"{byde}"):
             bidding.objects.update(bid=Replace("bid",int(f"{byde}"),int(f"{bids}")))
             return render(request, "auctions/listing.html",{
-                    "auction":c,
-                    "bids": bidding.objects.get(pk = listing_id)                })
+                    "auction":c
+                    })
         else:
             return render(request,"auctions/listing.html",{
-                    "auction": c,
-                    "bids":bidding.objects.get(pk = listing_id)
+                    "auction": c
+                   
                     })
     for names in d:
         list.append(names)    
     return render(request, "auctions/listing.html",{
             "auction":c,
-            "bids": bidding.objects.get(pk =listing_id),
             "list": list.__str__()
                 }) 
 
