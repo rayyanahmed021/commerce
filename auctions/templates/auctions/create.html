@@ -1,0 +1,46 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>create a listing</h2>
+{% if message %}
+<div class="alert alert-success" role="alert">
+ Item was added successfully!
+</div>
+{%else%}
+{%endif%}
+
+    
+
+    
+    <div class="container">
+
+        
+        <div class="row" >
+            <form action = "{% url 'create' user.username %}" method="POST">
+                {%csrf_token%}
+                <label> Title: <input type = "text" name = "Title"></label>
+                <br><label>Choose a category:</label>
+                <select>
+                    <option value="toys">Toys</option>
+                    <option value="fashion">Fashion</option>
+                    <option value="sport">Sport</option>
+                    <option value="car"> Car</option>
+                </select>
+                <br><label>Bid:<input type = "number" name = "Bid"></label>
+                <br><label>Description:<br><textarea id = "textarea" rows="10" cols="100" name = "Description"></textarea></label>
+                <br><label> Url(optional):<input type = "url" name="image"></label>
+                <br>
+                <input type="submit">
+            </form>
+    
+                       
+    
+            <div class="col">   
+         
+            </div>
+                     
+        </div>
+        
+        </div>
+    
+    {% endblock %}

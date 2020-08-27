@@ -7,11 +7,12 @@ from django.db.models.functions import Replace
 
 from .models import User,listing,watchlist,bidding
 
-def watchlists(request,username):
-    
+
+
+def watchlists(request,username):    
     f = User.objects.get(username = username)        
     usery = watchlist.objects.get(users= f.id )
-    return render(request,"auctions/watch.html",{
+    return render(request,"auctions/index.html",{
         "auction":usery.items.all()
         })
 
@@ -35,6 +36,21 @@ def watch(request,listing_id,username):
             return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
     return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
 
+def create(request,username):
+    if request.method == "POST":
+        users = User.objects.get(username=username)
+        title = request.POST["Title"]
+        bid = request.POST["Bid"]
+        bydes = bidding(bid=int(f"{bid}"))
+        bydes.save()
+        description  = request.POST["Description"]
+        image = request.POST["image"]
+        f = listing(created=users,title=title, image=image, des= description, bids=bydes)
+        f.save() 
+        return render(request, "auctions/create.html",{
+        "message":"c"
+        })
+    return render(request,"auctions/create.html")
 
 
 

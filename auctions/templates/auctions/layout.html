@@ -25,7 +25,10 @@
                     <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'watchlists' user.username %}">watchlist</a>
+                    <a class="nav-link" href="{% url 'watchlists' user.username %}">Watchlist</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'create' user.username %}">Create</a>
                 </li>
             {% else %}
                 <li class="nav-item">
