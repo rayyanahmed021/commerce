@@ -7,15 +7,26 @@ class User(AbstractUser):
 class bidding(models.Model):
     bid= models.IntegerField()
     def __str__(self):
-        return f"{self.bid}"
+        return f"{self.bid} "
+
+class categories(models.Model):
+    types = models.CharField(max_length=64)
+    def __str__(self):
+        return f"{self.types}"
 class listing(models.Model):
     created = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created")
     title = models.CharField(max_length=64)
     image = models.URLField()
     des = models.CharField(max_length=100)
     bids = models.OneToOneField(bidding, on_delete=models.CASCADE, related_name = "bids")
+    category = models.ForeignKey(categories,on_delete=models.CASCADE,related_name = "category")
+    
     def __str__(self):
         return f"{self.id}. {self.title}"
+
+class comment(models.Model):
+    com = models.CharField(max_length=300)
+    product = models.ForeignKey(listing,on_delete=models.CASCADE, related_name = "product")
 
 class watchlist(models.Model):
     users = models.ForeignKey(User,on_delete=models.CASCADE, related_name = "users")

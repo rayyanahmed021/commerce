@@ -1,5 +1,17 @@
 {% extends "auctions/layout.html" %}
 {% block body %}
+{% if error %}
+<div class="alert alert-danger" role="alert">
+    Please try again !
+   </div>
+{%else%}
+{%endif%}
+{%if success %}
+<div class="alert alert-success" role="alert">
+    Added bid successfully!
+   </div>
+{%else%}
+{%endif%}
 
 <div style="text-align: center;">
     <img src="{{auction.image}}" width ="50%" height="50%" >
@@ -34,8 +46,17 @@ created by : {{auction.created}}
     {% endif %}
 </form>
 
+<form action="{% url 'close' auction.id %}" method="POST">
+    {% csrf_token %}
+    {% if user.username == auction.created.username %}
+    <input type="submit" value="Close the auction">
+    {% else %}
+    <input type="submit" value="open the auction">
+
+    {% endif %}
 
 
+</form>
 
 
 

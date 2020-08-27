@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.db.models.functions import Replace
 
-from .models import User,listing,watchlist,bidding
+from .models import User,listing,watchlist,bidding,categories,comment
 
 
 
@@ -58,7 +58,7 @@ def create(request,username):
 def index(request):
     return render(request, "auctions/index.html",{
         "auction": listing.objects.all()
-    })
+            })
 def listings(request,listing_id):
     c = listing.objects.get(pk = listing_id)
     d = c.items.all()
@@ -72,11 +72,13 @@ def listings(request,listing_id):
         if int(f"{bids}") > int(f"{byde}"):
             bidding.objects.update(bid=Replace("bid",int(f"{byde}"),int(f"{bids}")))
             return render(request, "auctions/listing.html",{
-                    "auction":c
+                    "auction":c,
+                    "success":"u"
                     })
         else:
             return render(request,"auctions/listing.html",{
-                    "auction": c
+                    "auction": c,
+                    "error":"u"
                    
                     })
     for names in d:
@@ -84,9 +86,14 @@ def listings(request,listing_id):
     return render(request, "auctions/listing.html",{
             "auction":c,
             "list": list.__str__()
+            
                 }) 
-
-
+def close(request,listing_id):
+    c = listing.objects.get(pk = listing_id)
+    return render(request,"auctions/listing.html",{
+        "auction":c
+    })
+    
 def login_view(request):
     if request.method == "POST":
 
