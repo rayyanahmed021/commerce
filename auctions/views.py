@@ -7,6 +7,28 @@ from django.db.models.functions import Replace
 
 from .models import User,listing,watchlist,bidding
 
+def watch(request,listing_id,username):
+    if request.method == "POST":
+        c = listing.objects.get(pk = listing_id)
+        d = c.items.all()
+        f = User.objects.get(username = username)
+        
+        usery = watchlist.objects.get(users= f.id )
+        list = []
+        for names in d:
+            list.append(names)
+        if username in list.__str__() :
+            usery.items.remove(c)
+            
+            return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
+        else:
+            usery.items.add(c)
+            return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
+    return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
+
+
+
+
 
 def index(request):
     return render(request, "auctions/index.html",{
@@ -17,15 +39,17 @@ def listings(request,listing_id):
     c = listing.objects.get(pk = listing_id)
     d = c.items.all()
     list = []
+    
+
     if request.method == "POST" :
         byde = bidding.objects.get(pk = listing_id)
-        bids = request.POST["biddings"]        
+        bids = request.POST.get("biddingss",0) 
+               
         if int(f"{bids}") > int(f"{byde}"):
             bidding.objects.update(bid=Replace("bid",int(f"{byde}"),int(f"{bids}")))
             return render(request, "auctions/listing.html",{
                     "auction":c,
-                    "bids": bidding.objects.get(pk = listing_id)
-                })
+                    "bids": bidding.objects.get(pk = listing_id)                })
         else:
             return render(request,"auctions/listing.html",{
                     "auction": c,

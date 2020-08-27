@@ -16,20 +16,20 @@ created by : {{auction.created}}
 </div>
 <form action="{% url 'listings' auction.id %}" method="POST">
     {% csrf_token %}
-    <input type= "number" name = "biddings">
+    <input type= "number" name = "biddingss">
     
 </form>
+{{usery}}
 
 
-
-<form action="{% url 'listings' auction.id %}" >
+<form action="{% url 'watch' auction.id user.username %}" method="POST" >
    
     {% csrf_token %}
     {% if user.username in list %}
     
-    <input type= "button" value="remove from watchlist">    
+    <input type= "submit" value="remove from watchlist">    
     {% else %}
-    <input type= "button" value="add to watchlist">    
+    <input type= "submit" value="add to watchlist">    
 
     {% endif %}
 </form>
@@ -39,5 +39,5 @@ created by : {{auction.created}}
 
 
 
-{{list}}
+
 {%endblock%}
