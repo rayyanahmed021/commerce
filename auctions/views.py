@@ -7,6 +7,15 @@ from django.db.models.functions import Replace
 
 from .models import User,listing,watchlist,bidding
 
+def watchlists(request,username):
+    
+    f = User.objects.get(username = username)        
+    usery = watchlist.objects.get(users= f.id )
+    return render(request,"auctions/watch.html",{
+        "auction":usery.items.all()
+        })
+
+
 def watch(request,listing_id,username):
     if request.method == "POST":
         c = listing.objects.get(pk = listing_id)
