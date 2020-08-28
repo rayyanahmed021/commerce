@@ -1,7 +1,20 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    {% if message %}
+    <h2>Watchlist</h2>
+    {%elif category%}
+    <h2>Category</h2>
+    <ul>
+        {% for categories in category%}
+        <li><a href="{% url 'cate' categories%}">{{categories}}</a></li>
+        {%endfor%}
+    </ul>
+    {%elif shit%}
+    <h2>{{shit}}</h2>
+    {%else%}
     <h2>Active Listings</h2>
+    {%endif%}
     
 
     
@@ -22,7 +35,7 @@
         <img src="{{items.image}}" width ="350" height="300" alt = "tutti">
        
                 
-          <h6 style="text-align: center;"><a href="{% url 'listings' items.id %}"> {{items.title}} </a></h6>  <p style="text-align: center;">{{items.des}}<br> ${{items.bids}} </p>
+          <h6 style="text-align: center;"><a href="{% url 'listings' items.id  %}"> {{items.title}} </a></h6>  <p style="text-align: center;">{{items.des}}<br> ${{items.bids}} </p>
           
                 </div>
         {% endfor %}               

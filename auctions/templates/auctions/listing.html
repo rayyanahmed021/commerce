@@ -12,46 +12,55 @@
    </div>
 {%else%}
 {%endif%}
-
-<div style="text-align: center;">
-    <img src="{{auction.image}}" width ="50%" height="50%" >
+<h2 style="text-align: center;">{{auction.title}}</h2>
+<h6 style="text-align: right;">created by: {{auction.created}}</h6>
+<div >
+    <form action="{% url 'watch' auction.id user.username %}" method="POST" >
+   
+        {% csrf_token %}
+        {% if user.username in list %}
+        
+        <input type= "submit" value="Remove from watchlist">    
+        {% else %}
+        <input type= "submit" value="Add to watchlist">    
+    
+        {% endif %}
+    </form>
+    <div style="text-align: center;"><img src="{{auction.image}}"  width ="50%" height="50%" ></div>
+    
     
 </div>
-<h6 style="text-align: center;">{{auction.title}}</h6>
-<p style="text-align:center ;">{{auction.des}}
+<h6 style="text-align: center;"></h6>
+<p style="text-align:center ;">{{auction.des}}<br>
 category:{{auction.category}}
 </p>
-<div style="font-weight: bold ; font-size: 1.5cm;">
-    ${{auction.bids}}.0
-created by : {{auction.created}}
+<div style="font-weight: bold ; font-size: 1.0cm;">
+Starting bid:  ${{bid.start}}.0 <br>
+
+Current bid:   {% if bid.bid == 0 %} 
+                no bids made
+                {%else%}
+                ${{bid.bid}}.0
+                {%endif%}
+<br>Add your bid:
  
 </div>
 <form action="{% url 'listings' auction.id %}" method="POST">
     {% csrf_token %}
-    <input type= "number" name = "biddingss">
+    <input type= "number" placeholder="add your bidding" name = "biddingss">
     
 </form>
-{{usery}}
 
 
-<form action="{% url 'watch' auction.id user.username %}" method="POST" >
-   
-    {% csrf_token %}
-    {% if user.username in list %}
-    
-    <input type= "submit" value="remove from watchlist">    
-    {% else %}
-    <input type= "submit" value="add to watchlist">    
 
-    {% endif %}
-</form>
+
 
 <form action="{% url 'close' auction.id %}" method="POST">
     {% csrf_token %}
     {% if user.username == auction.created.username %}
     <input type="submit" value="Close the auction">
     {% else %}
-    <input type="submit" value="open the auction">
+    
 
     {% endif %}
 
@@ -60,9 +69,10 @@ created by : {{auction.created}}
 
 <h3>Comment section:</h3>
 {% for comment in comments%}
-<br>{{comment}}
+<div style="text-align: center;">{{comment.person}}:    {{comment}}<br>
+</div>
 {%endfor%}
-<div class = "form-group">
+<div class = "form-group" style="text-align: center;">
     
 <form action="" method="POST">
     {{user.username}}:<br> <textarea  name="comment" rows="8" cols="100"> </textarea>

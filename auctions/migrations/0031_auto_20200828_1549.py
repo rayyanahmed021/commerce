@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='bidding',
             name='bid',
-            field=models.IntegerField(default=10),
+            field=models.IntegerField(default=0),
         ),
     ]

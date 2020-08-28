@@ -6,11 +6,11 @@ class User(AbstractUser):
     
 class bidding(models.Model):
     start = models.IntegerField()
-    bid= models.IntegerField(default=10)
+    bid= models.IntegerField(default=0)
    
     money = models.ForeignKey(User, on_delete=models.CASCADE,related_name="money")
     def __str__(self):
-        return f"{self.start}>{self.bid} "
+        return f"{self.start}"
 
 class categories(models.Model):
     types = models.CharField(max_length=64)

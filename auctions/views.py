@@ -13,7 +13,8 @@ def watchlists(request,username):
     f = User.objects.get(username = username)        
     usery = watchlist.objects.get(users= f.id )
     return render(request,"auctions/index.html",{
-        "auction":usery.items.all()
+        "auction":usery.items.all(),
+        "message":"c"
         })
 
 
@@ -30,11 +31,11 @@ def watch(request,listing_id,username):
         if username in list.__str__() :
             usery.items.remove(c)
             
-            return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
+            return HttpResponseRedirect(reverse("listings", args = (listing_id,username,)))
         else:
             usery.items.add(c)
-            return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
-    return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
+            return HttpResponseRedirect(reverse("listings", args = (listing_id,username,)))
+    return HttpResponseRedirect(reverse("listings", args = (listing_id,username,)))
 
 def create(request,username):
     if request.method == "POST":
@@ -68,17 +69,30 @@ def listings(request,listing_id):
     if request.method == "POST" :
         byde = bidding.objects.get(pk = listing_id)
         bids = request.POST.get("biddingss",0) 
-               
-        if int(f"{bids}") > int(f"{byde}"):
-            bidding.objects.update(bid=Replace("bid",int(f"{byde}"),int(f"{bids}")))
+        comments = request.POST.get("comment",0)      
+        if int(f"{bids}") > int(f"{byde.start}") and int(f"{bids}")> int(f"{byde.bid}"):
+            byde.bid = bids
+            byde.save()
+            for names in d:
+                list.append(names)
+            
             return render(request, "auctions/listing.html",{
                     "auction":c,
-                    "success":"u"
+                    "success":"u",
+                    "bid":bidding.objects.get(pk = listing_id ),
+                    "comments": comment.objects.filter(product=c),
+                    "list": list.__str__()
                     })
         else:
+            for names in d:
+                list.append(names)
             return render(request,"auctions/listing.html",{
                     "auction": c,
-                    "error":"u"
+                    "error":"u",
+                    "list": list.__str__(),
+                    "bid":bidding.objects.get(pk = listing_id ),
+                    "comments": comment.objects.filter(product=c)
+
                    
                     })
     for names in d:
@@ -86,15 +100,38 @@ def listings(request,listing_id):
     return render(request, "auctions/listing.html",{
             "auction":c,
             "list": list.__str__(),
-            "comments": comment.objects.filter(product=c)
+            "comments": comment.objects.filter(product=c),
+            "bid":bidding.objects.get(pk = listing_id )
             
                 }) 
 def close(request,listing_id):
     c = listing.objects.get(pk = listing_id)
-    return render(request,"auctions/listing.html",{
-        "auction":c
+    d = c.items.all()
+    list = []
+    for names in d:
+        list.append(names) 
+    if request.method == "POST":
+        byde = bidding.objects.get(pk = listing_id )       
+        
+        return render(request,"auctions/listing.html",{
+            "auction":c,
+            "list": list.__str__(),
+            "comments": comment.objects.filter(product=c),
+            "bid":bidding.objects.get(pk = listing_id ),
+            "winner": byde.money
     })
-    
+def cat(request):
+    return render(request,"auctions/index.html",{
+        "category":categories.objects.all()
+    }) 
+
+def cate(request,category):
+    f = categories.objects.get(types = category)
+
+    return render(request, "auctions/index.html",{
+        "auction":listing.objects.filter(category = f),
+        "shit":category
+    })
 def login_view(request):
     if request.method == "POST":
 
