@@ -85,7 +85,8 @@ def listings(request,listing_id):
         list.append(names)    
     return render(request, "auctions/listing.html",{
             "auction":c,
-            "list": list.__str__()
+            "list": list.__str__(),
+            "comments": comment.objects.filter(product=c)
             
                 }) 
 def close(request,listing_id):

@@ -19,12 +19,12 @@
 </div>
 <h6 style="text-align: center;">{{auction.title}}</h6>
 <p style="text-align:center ;">{{auction.des}}
-    
+category:{{auction.category}}
 </p>
 <div style="font-weight: bold ; font-size: 1.5cm;">
     ${{auction.bids}}.0
 created by : {{auction.created}}
-    
+ 
 </div>
 <form action="{% url 'listings' auction.id %}" method="POST">
     {% csrf_token %}
@@ -58,7 +58,16 @@ created by : {{auction.created}}
 
 </form>
 
+<h3>Comment section:</h3>
+{% for comment in comments%}
+<br>{{comment}}
+{%endfor%}
+<div class = "form-group">
+    
+<form action="" method="POST">
+    {{user.username}}:<br> <textarea  name="comment" rows="8" cols="100"> </textarea>
 
 
-
+</form>
+</div>
 {%endblock%}
