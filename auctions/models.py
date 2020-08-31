@@ -6,9 +6,9 @@ class User(AbstractUser):
     
 class bidding(models.Model):
     start = models.IntegerField()
-    bid= models.IntegerField(default=0)
+    bid= models.IntegerField(default=0, blank=True)
    
-    money = models.ForeignKey(User, on_delete=models.CASCADE,related_name="money")
+    money = models.ForeignKey(User,blank=True, null=True, on_delete=models.CASCADE,related_name="money")
     def __str__(self):
         return f"{self.start}"
 

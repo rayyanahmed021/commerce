@@ -41,12 +41,14 @@ def create(request,username):
     if request.method == "POST":
         users = User.objects.get(username=username)
         title = request.POST["Title"]
+        category = request.POST["category"]
+        d = categories.objects.get(types=category)
         bid = request.POST["Bid"]
-        bydes = bidding(bid=int(f"{bid}"))
+        bydes = bidding(start=int(f"{bid}"), bid=0)
         bydes.save()
         description  = request.POST["Description"]
         image = request.POST["image"]
-        f = listing(created=users,title=title, image=image, des= description, bids=bydes)
+        f = listing(created=users,title=title, image=image, des= description, bids=bydes,category=d)
         f.save() 
         return render(request, "auctions/create.html",{
         "message":"c"
