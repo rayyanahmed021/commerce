@@ -31,11 +31,11 @@ def watch(request,listing_id,username):
         if username in list.__str__() :
             usery.items.remove(c)
             
-            return HttpResponseRedirect(reverse("listings", args = (listing_id,username,)))
+            return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
         else:
             usery.items.add(c)
-            return HttpResponseRedirect(reverse("listings", args = (listing_id,username,)))
-    return HttpResponseRedirect(reverse("listings", args = (listing_id,username,)))
+            return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
+    return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
 
 def create(request,username):
     if request.method == "POST":
@@ -53,7 +53,12 @@ def create(request,username):
         })
     return render(request,"auctions/create.html")
 
-
+def commy(request,listing_id,username):
+    if request.method == "POST":
+        comy = request.POST["comments"]
+        f = comment(com = comy , product=listing.objects.get(pk = listing_id), person = User.objects.get(username = username))
+        f.save()
+        return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
 
 
 def index(request):
@@ -104,22 +109,15 @@ def listings(request,listing_id):
             "bid":bidding.objects.get(pk = listing_id )
             
                 }) 
-def close(request,listing_id):
-    c = listing.objects.get(pk = listing_id)
-    d = c.items.all()
-    list = []
-    for names in d:
-        list.append(names) 
+def close(request,listing_id,username): 
     if request.method == "POST":
-        byde = bidding.objects.get(pk = listing_id )       
-        
-        return render(request,"auctions/listing.html",{
-            "auction":c,
-            "list": list.__str__(),
-            "comments": comment.objects.filter(product=c),
-            "bid":bidding.objects.get(pk = listing_id ),
-            "winner": byde.money
-    })
+        c = listing.objects.get(pk = listing_id)
+        d = c.items.all()
+        c.winner = c.bids.money       
+        c.save()
+        return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
+
+            
 def cat(request):
     return render(request,"auctions/index.html",{
         "category":categories.objects.all()
@@ -143,6 +141,8 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
+            f = watchlist(users=username, items="")
+            f.save()
             return HttpResponseRedirect(reverse("index"))
         else:
             return render(request, "auctions/login.html", {

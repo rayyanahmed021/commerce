@@ -23,7 +23,7 @@ class listing(models.Model):
     des = models.CharField(max_length=100)
     bids = models.OneToOneField(bidding, on_delete=models.CASCADE, related_name = "bids")
     category = models.ForeignKey(categories,on_delete=models.CASCADE,related_name = "category")
-    
+    winner = models.ForeignKey(User,on_delete=models.CASCADE, related_name="winner", null = True, blank=True,default="")
     def __str__(self):
         return f"{self.id}. {self.title}"
 
@@ -35,6 +35,6 @@ class comment(models.Model):
         return f"{self.com} "
 class watchlist(models.Model):
     users = models.ForeignKey(User,on_delete=models.CASCADE, related_name = "users")
-    items = models.ManyToManyField(listing,related_name="items")
+    items = models.ManyToManyField(listing, blank=True, related_name="items")
     def __str__(self):
         return f"{self.users}"

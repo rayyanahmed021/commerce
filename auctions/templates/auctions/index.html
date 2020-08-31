@@ -35,7 +35,15 @@
         <img src="{{items.image}}" width ="350" height="300" alt = "tutti">
        
                 
-          <h6 style="text-align: center;"><a href="{% url 'listings' items.id  %}"> {{items.title}} </a></h6>  <p style="text-align: center;">{{items.des}}<br> ${{items.bids}} </p>
+          <h6 style="text-align: center;"><a href="{% url 'listings' items.id  %}"> {{items.title}} </a></h6>  
+          <p style="text-align: center;">{{items.des}}<br>
+            
+            {% if items.bids.bid == 0 %}
+            ${{items.bids.start}}
+            {%else%}
+            ${{items.bids.bid}}
+            {%endif%}
+         </p>
           
                 </div>
         {% endfor %}               

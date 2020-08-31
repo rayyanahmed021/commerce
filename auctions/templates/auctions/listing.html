@@ -4,28 +4,39 @@
 <div class="alert alert-danger" role="alert">
     Please try again !
    </div>
-{%else%}
-{%endif%}
-{%if success %}
+{%elif success %}
 <div class="alert alert-success" role="alert">
     Added bid successfully!
    </div>
+{%endif%}
+    {% if auction.winner.username == user.username %}
+<div class="alert alert-success" role="alert">
+    Congratulations {{user.username}} for winning the auction!!!!
+   </div>
+   {%else%}
+   {%endif%}
+   
+{% if auction.winner.username %}
+<div class="alert alert-danger" role="alert">
+    The auction has been closed
+   </div>
 {%else%}
 {%endif%}
-<h2 style="text-align: center;">{{auction.title}}</h2>
+
+
+   <h2 style="text-align: center;">{{auction.title}}</h2>
 <h6 style="text-align: right;">created by: {{auction.created}}</h6>
-<div >
+<div>
     <form action="{% url 'watch' auction.id user.username %}" method="POST" >
    
         {% csrf_token %}
-        {% if user.username in list %}
-        
-        <input type= "submit" value="Remove from watchlist">    
+        {% if user.username in list %}        
+        <input class="btn btn-danger" type= "submit" value="Remove from watchlist">    
         {% else %}
-        <input type= "submit" value="Add to watchlist">    
-    
+        <input class = "btn btn-success" type= "submit" value="Add to watchlist">    
         {% endif %}
     </form>
+</div>
     <div style="text-align: center;"><img src="{{auction.image}}"  width ="50%" height="50%" ></div>
     
     
@@ -42,42 +53,62 @@ Current bid:   {% if bid.bid == 0 %}
                 {%else%}
                 ${{bid.bid}}.0
                 {%endif%}
-<br>Add your bid:
+                
+<br>
  
 </div>
-<form action="{% url 'listings' auction.id %}" method="POST">
+{% if auction.winner.username %}
+{%else%}
+<form action="{% url 'listings' auction.id  %}" method="POST">
     {% csrf_token %}
-    <input type= "number" placeholder="add your bidding" name = "biddingss">
+    <div class = "form-group">
+        Add your bid:<input class = "form-control" type= "number" placeholder="Add your bidding" name = "biddingss">
+        <input class="btn btn-primary" type="submit" value="Add">
+
+    </div>
+
     
 </form>
+{%endif%}
 
 
+{%if auction.winner.username %}
+{%else%}
 
-
-
-<form action="{% url 'close' auction.id %}" method="POST">
+        {% if user.username == auction.created.username %}
+    <form action="{% url 'close' auction.id user.username %}" method="POST">
     {% csrf_token %}
-    {% if user.username == auction.created.username %}
-    <input type="submit" value="Close the auction">
-    {% else %}
     
-
+    <input class = "btn btn-danger" type="submit" value="Close the auction">
+</form>
+    
+    {%else%}   
     {% endif %}
+{%endif%}
 
 
-</form>
 
 <h3>Comment section:</h3>
 {% for comment in comments%}
-<div style="text-align: center;">{{comment.person}}:    {{comment}}<br>
+<div >{{comment.person}}:
+    <input class="form-control" type="text" placeholder="{{comment}}" readonly>
+<br>
 </div>
 {%endfor%}
-<div class = "form-group" style="text-align: center;">
-    
-<form action="" method="POST">
-    {{user.username}}:<br> <textarea  name="comment" rows="8" cols="100"> </textarea>
 
+{% if auction.winner.username %}
+{%else%}
+<form action="{% url 'comment' auction.id user.username%}" method="POST">
+    {% csrf_token %}
+<label for="exampleFormControlTextarea1">{{user.username}}:</label>
 
-</form>
+<div class = "form-group">
+<textarea  name="comments"  class = "form-control"  id="exampleFormControlTextarea1" rows="3"> </textarea>
 </div>
+
+<input class = "btn btn-info" type="submit" value="Add your comment">
+</form>
+{%endif%}
+
+
 {%endblock%}
