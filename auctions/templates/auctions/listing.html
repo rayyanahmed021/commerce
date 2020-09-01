@@ -27,19 +27,18 @@
    <h2 style="text-align: center;">{{auction.title}}</h2>
 <h6 style="text-align: right;">created by: {{auction.created}}</h6>
 <div>
-    <form action="{% url 'watch' auction.id  %}" method="POST" >
+    <form action="{% url 'watch' auction.id user.username %}" method="POST" >
    
         {% csrf_token %}
         {% if user.username in list %}        
         
         <input class="btn btn-danger" type= "submit" value="Remove from watchlist">    
-        <input type="hidden" value="{{user.username}}" name = "username">
 
         {% else %}
         <input class = "btn btn-success" type= "submit" value="Add to watchlist">    
-        <input type="hidden" value="{{user.username}}" name = "username">
 
         {% endif %}
+
     </form>
 </div>
     <div style="text-align: center;"><img src="{{auction.image}}"  width ="50%" height="50%" ></div>

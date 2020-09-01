@@ -32,12 +32,12 @@ def watchlists(request,username):
         })
 
 @login_required()
-def watch(request,listing_id):
+def watch(request,listing_id,username):
     if request.method == "POST":
         c = listing.objects.get(pk = listing_id)
         d = c.items.all()
-        usernamy = request.POST.get("username",0)
-        f = User.objects.get(username = usernamy)
+        
+        f = User.objects.get(username = username)
         
         usery = watchlist.objects.get(users= f.id )
         list = []
@@ -56,8 +56,8 @@ def create(request,username):
     if request.method == "POST":
         users = User.objects.get(username=username)
         title = request.POST["Title"]
-        category = request.POST["category"]
-        d = categories.objects.get(types=category)
+        categoryy = request.POST["category"]
+        d = categories.objects.get(types=categoryy)
         bid = request.POST["Bid"]
         bydes = bidding(start=int(f"{bid}"), bid=0)
         bydes.save()
@@ -68,7 +68,9 @@ def create(request,username):
         return render(request, "auctions/create.html",{
         "message":"c"
         })
-    return render(request,"auctions/create.html")
+    return render(request,"auctions/create.html",{
+        "category":categories.objects.all()
+    })
 @login_required()
 def commy(request,listing_id):
     if request.method == "POST":

@@ -23,10 +23,9 @@
                 <div class="col-md-4 mb-3">
                     <label>Choose a category:</label>
                     <select name="category" class = "form-control">
-                    <option value="toys">Toys</option>
-                    <option value="fashion">Fashion</option>
-                    <option value="sport">Sport</option>
-                    <option value="car"> Car</option>
+                        {% for categories in category %}
+                    <option  value="{{categories}}">{{categories}}</option>
+                        {%endfor%}
                 </select>
                 </div>
                 <div class="col-md-4 mb-3">
