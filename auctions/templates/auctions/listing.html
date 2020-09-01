@@ -27,13 +27,18 @@
    <h2 style="text-align: center;">{{auction.title}}</h2>
 <h6 style="text-align: right;">created by: {{auction.created}}</h6>
 <div>
-    <form action="{% url 'watch' auction.id user.username %}" method="POST" >
+    <form action="{% url 'watch' auction.id  %}" method="POST" >
    
         {% csrf_token %}
         {% if user.username in list %}        
+        
         <input class="btn btn-danger" type= "submit" value="Remove from watchlist">    
+        <input type="hidden" value="{{user.username}}" name = "username">
+
         {% else %}
         <input class = "btn btn-success" type= "submit" value="Add to watchlist">    
+        <input type="hidden" value="{{user.username}}" name = "username">
+
         {% endif %}
     </form>
 </div>
@@ -64,7 +69,7 @@ Current bid:   {% if bid.bid == 0 %}
     <div class = "form-group">
         Add your bid:<input class = "form-control" type= "number" placeholder="Add your bidding" name = "biddingss">
         <input class="btn btn-primary" type="submit" value="Add">
-
+            <input type="hidden" name = "username" value="{{user.username}}">
     </div>
 
     
@@ -98,13 +103,14 @@ Current bid:   {% if bid.bid == 0 %}
 
 {% if auction.winner.username %}
 {%else%}
-<form action="{% url 'comment' auction.id user.username%}" method="POST">
+<form action="{% url 'comment' auction.id %}" method="POST">
     {% csrf_token %}
 <label for="exampleFormControlTextarea1">{{user.username}}:</label>
 
 <div class = "form-group">
 <textarea  name="comments"  class = "form-control"  id="exampleFormControlTextarea1" rows="3"> </textarea>
 </div>
+<input type="hidden" value="{{user.username}}" name = "username">
 
 <input class = "btn btn-info" type="submit" value="Add your comment">
 </form>

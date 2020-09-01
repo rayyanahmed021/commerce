@@ -4,11 +4,25 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.db.models.functions import Replace
+from django.contrib.auth.decorators import login_required
 
 from .models import User,listing,watchlist,bidding,categories,comment
 
+def lis(request,listing_id):
+    c = listing.objects.get(pk = listing_id)
+    d = c.items.all()
+    list = []
+    for names in d:
+        list.append(names)    
 
+    return render(request, "auctions/listing.html",{
+        "auction":c,
+            "list": list.__str__(),
+            "comments": comment.objects.filter(product=c),
+            "bid":bidding.objects.get(pk = listing_id )
 
+    })
+@login_required()
 def watchlists(request,username):    
     f = User.objects.get(username = username)        
     usery = watchlist.objects.get(users= f.id )
@@ -17,12 +31,13 @@ def watchlists(request,username):
         "message":"c"
         })
 
-
-def watch(request,listing_id,username):
+@login_required()
+def watch(request,listing_id):
     if request.method == "POST":
         c = listing.objects.get(pk = listing_id)
         d = c.items.all()
-        f = User.objects.get(username = username)
+        usernamy = request.POST.get("username",0)
+        f = User.objects.get(username = usernamy)
         
         usery = watchlist.objects.get(users= f.id )
         list = []
@@ -31,12 +46,12 @@ def watch(request,listing_id,username):
         if username in list.__str__() :
             usery.items.remove(c)
             
-            return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
+            return HttpResponseRedirect(reverse("dis", args = (listing_id,)))
         else:
             usery.items.add(c)
-            return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
-    return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
-
+            return HttpResponseRedirect(reverse("dis", args = (listing_id,)))
+    return HttpResponseRedirect(reverse("dis", args = (listing_id,)))
+@login_required()
 def create(request,username):
     if request.method == "POST":
         users = User.objects.get(username=username)
@@ -54,19 +69,23 @@ def create(request,username):
         "message":"c"
         })
     return render(request,"auctions/create.html")
-
-def commy(request,listing_id,username):
+@login_required()
+def commy(request,listing_id):
     if request.method == "POST":
         comy = request.POST["comments"]
-        f = comment(com = comy , product=listing.objects.get(pk = listing_id), person = User.objects.get(username = username))
+        usernamy = request.POST.get("username",0)
+
+        f = comment(com = comy , product=listing.objects.get(pk = listing_id), person = User.objects.get(username = usernamy))
         f.save()
-        return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
+        return HttpResponseRedirect(reverse("dis", args = (listing_id,)))
 
 
 def index(request):
     return render(request, "auctions/index.html",{
         "auction": listing.objects.all()
             })
+
+@login_required()
 def listings(request,listing_id):
     c = listing.objects.get(pk = listing_id)
     d = c.items.all()
@@ -76,9 +95,11 @@ def listings(request,listing_id):
     if request.method == "POST" :
         byde = bidding.objects.get(pk = listing_id)
         bids = request.POST.get("biddingss",0) 
-        comments = request.POST.get("comment",0)      
+        comments = request.POST.get("comment",0)
+        usernamy = request.POST.get("username",0)      
         if int(f"{bids}") > int(f"{byde.start}") and int(f"{bids}")> int(f"{byde.bid}"):
             byde.bid = bids
+            byde.money = User.objects.get(username = usernamy)
             byde.save()
             for names in d:
                 list.append(names)
@@ -102,22 +123,15 @@ def listings(request,listing_id):
 
                    
                     })
-    for names in d:
-        list.append(names)    
-    return render(request, "auctions/listing.html",{
-            "auction":c,
-            "list": list.__str__(),
-            "comments": comment.objects.filter(product=c),
-            "bid":bidding.objects.get(pk = listing_id )
-            
-                }) 
+    return HttpResponseRedirect(reverse("dis",args=(listing_id,))) 
+@login_required()
 def close(request,listing_id,username): 
     if request.method == "POST":
         c = listing.objects.get(pk = listing_id)
         d = c.items.all()
-        c.winner = c.bids.money       
+        c.winner = User.objects.get(username=c.bids.money.username)       
         c.save()
-        return HttpResponseRedirect(reverse("listings", args = (listing_id,)))
+        return HttpResponseRedirect(reverse("dis", args = (listing_id,)))
 
             
 def cat(request):
@@ -143,8 +157,6 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            f = watchlist(users=username, items="")
-            f.save()
             return HttpResponseRedirect(reverse("index"))
         else:
             return render(request, "auctions/login.html", {
@@ -176,6 +188,8 @@ def register(request):
         try:
             user = User.objects.create_user(username, email, password)
             user.save()
+            f = watchlist(users=User.objects.get(username = username))
+            f.save()
         except IntegrityError:
             return render(request, "auctions/register.html", {
                 "message": "Username already taken."
